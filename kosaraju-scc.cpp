@@ -19,6 +19,7 @@ Time Complexity	:	O(V+E) <-- Optimal
 #include <vector>
 #include <stack>
 #include <cstdio>
+#include <cstring>
 #include <map>
 
 using namespace std;
@@ -37,51 +38,99 @@ typedef pair<int,int> ii;
 #define rep1(i,n) for (i=1; i<=n ; i++)
 #define MAX 11111
 
-int n, e; // number of vertices, edges
-vi g[MAX]; // lists of adjacent vertices
+// Assuming vertices are labeled 0...V-1
+vi G[MAX], Grev[MAX];
+bool explored[MAX];
+int leader[MAX], finish[MAX], order[MAX], t = -1, parent = 0, V, E;
 
-bool dfs(int start_vertex) {
-	int i, u, v, len;
-    vi visited(n+1, false);
-    stack <int> S;
-    S.push(start_vertex);
-    while (!S.empty()) {
-        u = S.top();
-        S.pop();
-        // Print
-        cout << u << " ";
-        if (!(visited[u])) {
-            visited[u] = true;
-            tr(g[u], it) { 
-                S.push(*it);
-            }
-        }
-    }
+// running DFS on the reverse graph
+void dfs_reverse(int i) {
+    explored[i] = true;
+    for(vi::iterator it = Grev[i].begin(); it != Grev[i].end(); it++)
+        if(!explored[*it])
+            dfs_reverse(*it);
+    t++;
+    finish[i] = t;
 }
 
+// running DFS on the actual graph
+void dfs(int i) {
+    explored[i] = true;
+    leader[i] = parent;
+    for(vi::iterator it = G[i].begin(); it != G[i].end(); it++) {
+        cout << *it << " "; 
+        if(!explored[*it]) {
+            dfs(*it);
+        }
+    }
+    cout << "\n";
+}
 
-int main () {
+// check if u & v are in the same connected component
+bool stronglyConnected(int u, int v)    {
+    return leader[u] == leader[v];
+}
 
-	freopen("in.txt", "r", stdin);
-	scanf("%d%d", &n, &e);
-	int i, u, v;
-	rep(i,e) {
-		scanf("%d%d", &u, &v);
-		cout << u <<" --> " << v << "\n";
-		g[u].push_back(v);
-	}
-	
-	//Traverse the given graph from vertex-0
-	// This is choice and situation dependent.
-	dfs(1);
-	
-	return 0;
+int main()  {
+    int i, u, v, countCC, Q;
+
+    //freopen("input.txt", "r", stdin);
+
+    scanf("%d %d", &V, &E); // Enter the number of vertices & edges
+    for(i=0; i<E; i++)  {   // Enter E edges : u -> v
+        scanf("%d %d", &u, &v);
+        G[u].push_back(v);  // Insert into the adjacency list of the graph
+        Grev[v].push_back(u);   // and the reverse graph
+    }
+
+    printf("Original graph :\n");
+    for(i=0; i<V; i++)  {
+        if(!G[i].empty())   {
+            printf("%d : ", i);
+            for(vi::iterator it = G[i].begin(); it != G[i].end(); it++)
+                printf("%d ", *it);
+            printf("\n");
+        }
+    }
+
+    printf("Reverse graph :\n");
+    for(i=0; i<V; i++)  {
+        if(!Grev[i].empty())   {
+            printf("%d : ", i);
+            for(vi::iterator it = Grev[i].begin(); it != Grev[i].end(); it++)
+                printf("%d ", *it);
+            printf("\n");
+        }
+    }
+
+    // run dfs on the reverse graph to get reverse postorder
+    memset(explored, false, V*sizeof(bool));
+    for(i=0; i<V; i++)  {
+        if(!explored[i])
+            dfs_reverse(i);
+        order[finish[i]] = i;
+    }
+
+    printf("Strongly Connected Components: \n");
+    // run dfs on the actual graph in reverse postorder
+    memset(explored, false, V*sizeof(bool));
+    countCC = 0;
+    for(i=V-1; i>=0; i--)
+        if(!explored[order[i]]) {
+            parent = order[i];
+            dfs(order[i]);
+            countCC++;
+        }
+
+    printf("Total no. of strongly connected components : %d\n", countCC);
+    
+    return 0;
 }
 
 /*
 Sample:
 
-5	// vertices
+5 5	// vertices, edges
 1 3
 2 1
 3 2
@@ -89,8 +138,7 @@ Sample:
 4 5
 
 SCC:
+3 SCC's in given graph
 
-5
-4
-1 2 3
+{{5}, {4}, {1, 2, 3}}
 */

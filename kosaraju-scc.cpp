@@ -1,15 +1,12 @@
 /*
 Author 		:	manojpandey
-Algorithm	:	Kosraju's Two Pass Algorithm for
+Algorithm	:	Kosraju-Sharir Algorithm for
 				finding strongly connected components
-				in a graph
+				in a graph. (Also called: Kosaraju's two-pass algorithm)
 
-		1. Let G be a directed graph and S be an empty stack.
-		2. While S does not contain all vertices:
-		3.		Choose an arbitrary vertex v not in S. Perform a depth-first search starting at v. Each time that depth-first search finishes expanding a vertex u, push u onto S.
-		4. Reverse the directions of all arcs to obtain the transpose graph.
-		5. While S is nonempty:
-		6. 		Pop the top vertex v from S. Perform a depth-first search starting at v in the transpose graph. The set of visited vertices will give the strongly connected component containing v; record this and remove all these vertices from the graph G and the stack S. Equivalently, breadth-first search (BFS) can be used instead of depth-first search.
+1. Perform DFS on grapg G, store finishing times of the vertices.
+2. Perform DFS on Grev, where vertices are ordered by decreasing order of finishing time.
+3. Each tree in the second DFS is a SCC of the graph.
 
 Time Complexity	:	O(V+E) <-- Optimal
 					O(V^2) , if adjacency matrix is used
@@ -66,6 +63,7 @@ void dfs(int i) {
     cout << "\n";
 }
 
+// Addendum:
 // check if u & v are in the same connected component
 bool stronglyConnected(int u, int v)    {
     return leader[u] == leader[v];

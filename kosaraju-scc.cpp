@@ -65,7 +65,7 @@ void dfs(int i) {
 
 // Addendum:
 // check if u & v are in the same connected component
-bool stronglyConnected(int u, int v)    {
+bool stronglyConnected (int u, int v)    {
     return leader[u] == leader[v];
 }
 
@@ -126,7 +126,7 @@ int main()  {
 }
 
 /*
-Sample:
+Sample Input:
 
 5 5	// vertices, edges
 1 3
@@ -135,8 +135,10 @@ Sample:
 1 4
 4 5
 
+Output:
 SCC:
 3 SCC's in given graph
 
 {{5}, {4}, {1, 2, 3}}
-*/
+
+ */

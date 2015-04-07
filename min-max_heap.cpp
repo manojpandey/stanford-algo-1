@@ -1,5 +1,7 @@
-// Building a Max Heap and Min Heap
-
+/*
+Author      :   manojpandey
+Algorithm   :   Building a Max Heap and Min Heap
+*/
 #include <iostream>
 #include <cstdio>
 #include <string>

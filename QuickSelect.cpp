@@ -1,4 +1,6 @@
-/* 	QUICKSELECT ALGORITHM
+/* 	
+Author 		:	manojpandey
+Algorithm 	:	QuickSelect Algorithm
 
 	Finding the kth order statistic
    	using Hoare's Selection Algorithm
@@ -100,5 +102,3 @@ int main () {
 	}
 
 }
-
-
